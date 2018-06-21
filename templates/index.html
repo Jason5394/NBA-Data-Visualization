@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>NBA Stats Visualization</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
+</head>
+
+<body>
+{% if player %}
+    <h2>Player name is {{ player }}</h2>
+{% endif %}
+
+<form class="searchbtn" action="{{ url_for('playerstats.index') }}">
+    <input type="text" placeholder="Search Player" name="player">
+    <button type="submit"><i class="fa fa-search"></i></i></button>
+</form>
+
+{% for message in get_flashed_messages() %}
+    <div class="flash">{{ message }}</div>
+{% endfor %}
+
+{% if chart_data %}
+<canvas id="line_chart" width="600" height="400"></canvas>
+<script>
+    var context_vars = {{ chart_data | tojson }};
+</script>
+<script src="static/js/playerchart.js"></script>
+{% endif %}
+</body>
+</html>
+
+{#
+{% if not gamelogs.empty() %}
+<table>
+<tr>
+    <th>Game Number</th>
+    <th>Date</th>
+    <th>Pts</th>
+    <th>Rebounds</th>
+    <th>Assists</th>
+    <th>Minutes Played</th>
+</tr>
+
+{% for game in gamelogs %}
+    <tr>
+        <td>{{ loop.index }}</td>
+        <td>{{ game.GAME_DATE }}</td>
+        <td>{{ game.PTS }}</td>
+        <td>{{ game.REB }}</td>
+        <td>{{ game.AST }}</td>
+        <td>{{ game.MIN}}</td>
+    </tr>
+{% endfor %}
+<table>
+{% endif %}
+#}
