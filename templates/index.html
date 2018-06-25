@@ -3,7 +3,8 @@
 <head>
     <meta charset="utf-8"/>
     <title>NBA Stats Visualization</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
 </head>
 
 <body>
@@ -16,12 +17,20 @@
     <button type="submit"><i class="fa fa-search"></i></i></button>
 </form>
 
+<select id="select" name="statsselection">
+    <option value="PTS">Points</option>
+    <option value="REB">Rebounds</option>
+    <option value="ASS">Assists</option>
+    <option value="STL">Steals</option>
+    <option value="BLK">Blocks</option>
+</select>
+
 {% for message in get_flashed_messages() %}
     <div class="flash">{{ message }}</div>
 {% endfor %}
 
 {% if chart_data %}
-<canvas id="line_chart" width="600" height="400"></canvas>
+<canvas id="line_chart" width="1000" height="400"></canvas>
 <script>
     var context_vars = {{ chart_data | tojson }};
 </script>

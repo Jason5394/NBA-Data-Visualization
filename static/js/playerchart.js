@@ -22,9 +22,19 @@ var chartData = {
       pointHoverBorderWidth: 2,
       pointRadius: 1,
       pointHitRadius: 10,
-      data : context_vars.data,
+      data : context_vars.PTS,
       spanGaps: false
-  }]
+  }],
+}
+var chartOptions = {
+  scales: {
+    xAxes: [{
+      ticks: {
+        autoSkip: true,
+        maxTicksLimit: 20
+      }
+    }]
+  }
 }
 
 // get chart canvas
@@ -34,4 +44,10 @@ var ctx = document.getElementById("line_chart").getContext("2d");
 var line_chart = new Chart(ctx, {
   type: 'line',
   data: chartData,
+  options: chartOptions
 });
+
+window.onload=function() {
+  document.getElementById("statsselection").onchange=function() {
+  }
+}
