@@ -1,12 +1,12 @@
 Chart.defaults.global.responsive = false;
 
-(function($){
+(function($, context_vars){
 
 // define the chart data
-var chartData = {
+var linechartData = {
   labels : context_vars.labels,
   datasets : [{
-      label: context_vars.legend,
+      label: "PTS",
       fill: true,
       lineTension: 0.1,
       backgroundColor: "rgba(75,192,192,0.4)",
@@ -28,7 +28,7 @@ var chartData = {
       spanGaps: false
   }],
 }
-var chartOptions = {
+var linechartOptions = {
   scales: {
     xAxes: [{
       ticks: {
@@ -39,19 +39,30 @@ var chartOptions = {
   }
 }
 
+function updateLineChart(chart, statstype) {
+    console.log("updating chart...");
+    console.log("data:" + context_vars[statstype]);
+    console.log("legend:" + statstype);
+    chart.data.datasets[0].data = context_vars[statstype];
+    chart.data.datasets[0].label = statstype;
+    chart.update();
+}
+
 // get chart canvas
-var ctx = $("line_chart").getContext("2d");
+var ctx = $("#line_chart")[0].getContext("2d");
 
 // create the chart using the chart canvas
 var line_chart = new Chart(ctx, {
   type: 'line',
-  data: chartData,
-  options: chartOptions
+  data: linechartData,
+  options: linechartOptions
 });
 
 //event handlers
 $("#statsselection").on("change", function(){
-    alert($(this).find("option:selected").text());
+    var selection = $(this).find("option:selected");
+    //alert($(this).find("option:selected").text());
+    updateLineChart(line_chart, selection.val());
 });
 
-})(window.jQuery);
+})(window.jQuery, window.context_vars);
