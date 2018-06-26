@@ -2,11 +2,15 @@ Chart.defaults.global.responsive = false;
 
 (function($, context_vars){
 
+//stats dropdown jQuery object
+var statsselection = $("#statsselection");
+var curstatsselection = statsselection.find("option:selected");
+
 // define the chart data
 var linechartData = {
   labels : context_vars.labels,
   datasets : [{
-      label: "PTS",
+      label: curstatsselection.text(),
       fill: true,
       lineTension: 0.1,
       backgroundColor: "rgba(75,192,192,0.4)",
@@ -39,12 +43,13 @@ var linechartOptions = {
   }
 }
 
-function updateLineChart(chart, statstype) {
+function updateLineChart(chart, curselected) {
+    var statstype = curselected.val();
+    var label = curselected.text();
     console.log("updating chart...");
     console.log("data:" + context_vars[statstype]);
-    console.log("legend:" + statstype);
     chart.data.datasets[0].data = context_vars[statstype];
-    chart.data.datasets[0].label = statstype;
+    chart.data.datasets[0].label = label;
     chart.update();
 }
 
@@ -59,10 +64,9 @@ var line_chart = new Chart(ctx, {
 });
 
 //event handlers
-$("#statsselection").on("change", function(){
-    var selection = $(this).find("option:selected");
-    //alert($(this).find("option:selected").text());
-    updateLineChart(line_chart, selection.val());
+statsselection.on("change", function(){
+    curstatsselection = $(this).find("option:selected");
+    updateLineChart(line_chart, curstatsselection);
 });
 
 })(window.jQuery, window.context_vars);
