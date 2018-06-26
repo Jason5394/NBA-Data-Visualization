@@ -1,5 +1,7 @@
 Chart.defaults.global.responsive = false;
 
+(function($){
+
 // define the chart data
 var chartData = {
   labels : context_vars.labels,
@@ -38,7 +40,7 @@ var chartOptions = {
 }
 
 // get chart canvas
-var ctx = document.getElementById("line_chart").getContext("2d");
+var ctx = $("line_chart").getContext("2d");
 
 // create the chart using the chart canvas
 var line_chart = new Chart(ctx, {
@@ -47,9 +49,9 @@ var line_chart = new Chart(ctx, {
   options: chartOptions
 });
 
-(function() {
-    console.log("started function");
-    $("#statsselection").on("change", function(){
-        alert($(this).find("option:selected").text());
-    });
-})();
+//event handlers
+$("#statsselection").on("change", function(){
+    alert($(this).find("option:selected").text());
+});
+
+})(window.jQuery);
