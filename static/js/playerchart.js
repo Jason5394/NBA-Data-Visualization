@@ -47,7 +47,9 @@ var line_chart = new Chart(ctx, {
   options: chartOptions
 });
 
-window.onload=function() {
-  document.getElementById("statsselection").onchange=function() {
-  }
-}
+(function() {
+    console.log("started function");
+    $("#statsselection").on("change", function(){
+        alert($(this).find("option:selected").text());
+    });
+})();
