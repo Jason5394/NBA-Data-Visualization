@@ -9,7 +9,7 @@
 
 <body>
 {% if player %}
-    <h2>Player name is {{ player }}</h2>
+    <h2>{{ player }}</h2>
 {% endif %}
 
 <form class="searchbtn" action="{{ url_for('playerstats.index') }}">

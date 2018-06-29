@@ -3,7 +3,7 @@ from nba_py.player import PlayerNotFoundException, PlayerGameLogs, get_player, P
 import requests
 from fake_useragent import UserAgent
 from pandas import DataFrame
-from .dataformatting import format_gamelogs
+from .dataformatting import format_gamelogs, filter_dataframe
 
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for, jsonify
@@ -53,8 +53,5 @@ def player():
     except (PlayerNotFoundException, IndexError):
         return bad_request("player not found!")
     shooting_splits = PlayerShootingSplits(player_id)
-    res = {
-        "FGM": shooting_splits.shot_5ft()["FGM"].tolist(),
-        "FGA": shooting_splits.shot_5ft()["FGA"].tolist()
-    }
+    res = filter_dataframe(shooting_splits.shot_5ft(), ["FGM", "FGA"])
     return jsonify(res)
