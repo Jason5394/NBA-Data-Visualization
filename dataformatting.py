@@ -10,3 +10,6 @@ def format_gamelogs(gamelogs):
     #init game number list (temporary)
     all_data["labels"] = [i for i in range(0, gamelogs.info().shape[0])]
     return all_data
+
+def format_shootingbar(shooting_splits):
+    pass

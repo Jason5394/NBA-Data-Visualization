@@ -27,5 +27,6 @@ def create_app(test_config=None):
     #register playerstats blueprint
     from . import playerstats
     app.register_blueprint(playerstats.bp)
-
+    app.register_error_handler(404, playerstats.page_not_found)
+    app.register_error_handler(400, playerstats.bad_request)
     return app
