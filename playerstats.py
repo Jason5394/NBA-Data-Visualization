@@ -68,6 +68,6 @@ def shooting_splits():
         player_id = get_player(name_tokens[0], last_name=name_tokens[1], just_id=True)
     except (PlayerNotFoundException, IndexError):
         return bad_request("player not found!")
-    shooting_splits = PlayerShootingSplits(player_id)
+    shooting_splits = PlayerShootingSplits(player_id, season="2017-18")
     res = filter_dataframe(shooting_splits.shot_5ft(), ["FGM", "FGA"])
     return jsonify(res)
