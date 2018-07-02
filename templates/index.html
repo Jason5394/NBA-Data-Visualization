@@ -5,17 +5,24 @@
     <title>NBA Stats Visualization</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+        var urls = {
+            "shooting_splits" : "{{ url_for('main.shooting_splits') }}",
+            "player_stats" : "{{ url_for('main.player_stats') }}",
+        };
+    </script>
 </head>
 
 <body>
-{% if player %}
-    <h2>{{ player }}</h2>
-{% endif %}
 
-<form class="searchbtn" action="{{ url_for('playerstats.index') }}">
+<form class="searchbtn">
     <input type="text" placeholder="Search Player" name="player">
     <button type="submit"><i class="fa fa-search"></i></button>
 </form>
+
+{% for message in get_flashed_messages() %}
+    <div class="flash">{{ message }}</div>
+{% endfor %}
 
 <select id="statsselection">
     <option value="PTS">Points</option>
@@ -25,16 +32,9 @@
     <option value="BLK">Blocks</option>
 </select>
 
-{% for message in get_flashed_messages() %}
-    <div class="flash">{{ message }}</div>
-{% endfor %}
-
-{% if chart_data %}
 <canvas id="line_chart" width="1000" height="400"></canvas>
-<script>
-    var context_vars = {{ chart_data | tojson }};
-</script>
 <script src="static/js/playerchart.js"></script>
-{% endif %}
+
+<script src="static/js/shootingchart.js"></script>
 </body>
 </html>

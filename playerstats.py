@@ -9,7 +9,7 @@ from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for, jsonify
 )
 
-bp = Blueprint('playerstats', __name__)
+bp = Blueprint('main', __name__)
 
 @bp.errorhandler(404)
 def page_not_found(error=None):
@@ -29,6 +29,7 @@ def bad_request(error=None):
 
 @bp.route('/')
 def index():
+    '''
     player_name = request.args.get('player')
     if not player_name:
         return render_template('index.html')
@@ -40,10 +41,25 @@ def index():
         return render_template('index.html')
     gamelogs = PlayerGameLogs(player_id, season='ALL', season_type='Regular Season')
     all_data = format_gamelogs(gamelogs)
-    return render_template('index.html', player=player_name, chart_data=all_data)
+    return render_template('index.html', player=player_name, chart_data=all_data)''' 
+    return render_template('index.html')
+
+@bp.route('/player-stats')
+def player_stats():
+    player_name = request.args.get('player')
+    if not player_name:
+        return bad_request("player param must be given")
+    name_tokens = player_name.split()
+    try:
+        player_id = get_player(name_tokens[0], last_name=name_tokens[1], just_id=True)
+    except (PlayerNotFoundException, IndexError):
+        return bad_request('Player not found!')
+    gamelogs = PlayerGameLogs(player_id, season='ALL', season_type='Regular Season')
+    all_data = format_gamelogs(gamelogs)
+    return jsonify(all_data)
 
 @bp.route('/shooting-splits')
-def player():
+def shooting_splits():
     player_name = request.args.get('player')
     if not player_name:
         return bad_request("player query param must be filled.")        
