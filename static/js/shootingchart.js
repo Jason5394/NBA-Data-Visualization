@@ -24,6 +24,37 @@
     };
 
     var barchartOptions = {
+        tooltips: {
+            callbacks: {
+                label: function(tooltipItem) {
+                    return tooltipItem["yLabel"].toFixed(2);
+                },
+                afterLabel: function(tooltipItem) {
+                    curindex = tooltipItem["index"];
+                    tot_attempts = shooting_stats["total_attempts"];
+                    tot_makes = shooting_stats["total_makes"];
+                    //for frequency
+                    if (tooltipItem["datasetIndex"] == 0) {
+                        if (tooltipItem["xLabel"] != "Overall") {
+                            return shooting_stats.FGA[curindex] + '-' + tot_attempts;
+                        }
+                        else {
+                            return tot_attempts + '-' + tot_attempts;
+                        }
+                    }
+                    //for percentage
+                    else if (tooltipItem["datasetIndex"] == 1) {
+                        if (tooltipItem["xLabel"] != "Overall") {
+                            return shooting_stats.FGM[curindex] + '-' + shooting_stats.FGA[curindex];
+                        }
+                        else {
+                            return tot_makes + '-' + tot_attempts;
+                        }
+                    }
+                    else return "";
+                }
+            }
+        },
         yAxes: [{
             ticks: {
                 min: 0,
@@ -42,13 +73,15 @@
       options: barchartOptions
     });
 
+    var addarray = function(acc, curval) {
+        return acc + curval;
+    }
+
     function updateBarChart(chart) {
-        var attempts = shooting_stats.FGA;
-        var makes = shooting_stats.FGM;
-        frequency = calcShotFrequency(attempts);
+        frequency = calcShotFrequency(shooting_stats);
         frequency.push(1.0);
-        percentage = calcShotPercentage(makes, attempts);
-        percentage.push(makes.reduce(addarray)/attempts.reduce(addarray));
+        percentage = calcShotPercentage(shooting_stats);
+        percentage.push(shooting_stats.total_makes/shooting_stats.total_attempts);
         chart.data.datasets[0].data = frequency;
         chart.data.datasets[1].data = percentage;
         chart.update();
@@ -59,7 +92,7 @@
         var player = ctx.find("input").val();
         var jqxhr = $.get(urls.shooting_splits, {"player": player}, function(res) {
             console.log(res);
-            shooting_stats = res;
+            updateShootingStats(res);
             updateBarChart(shooting_chart);
         }, "json")
         .fail(function(data) {
@@ -67,13 +100,16 @@
         })
     }
 
-    var addarray = function(acc, curval) {
-        return acc + curval;
+    function updateShootingStats(newData) {
+        shooting_stats = newData;
+        shooting_stats.total_attempts = newData.FGA.reduce(addarray);
+        shooting_stats.total_makes = newData.FGM.reduce(addarray);
     }
 
-    function calcShotFrequency(attempts) {
-        var arrayLen = attempts.length;
-        var total_attempts = attempts.reduce(addarray);
+    function calcShotFrequency(shooting_stats) {
+        var arrayLen = shooting_stats.FGA.length;
+        var attempts = shooting_stats.FGA;
+        var total_attempts = shooting_stats.total_attempts;
         var sol = [];
         for (let i = 0; i < arrayLen; ++i) {
             sol.push(attempts[i]/total_attempts);
@@ -81,7 +117,9 @@
         return sol;
     }
 
-    function calcShotPercentage(makes, attempts) {
+    function calcShotPercentage(shooting_stats) {
+        var makes = shooting_stats.FGM;
+        var attempts = shooting_stats.FGA;
         if (makes.len != attempts.len) { return undefined; }
         var arrayLen = makes.length;
         var sol = [];
