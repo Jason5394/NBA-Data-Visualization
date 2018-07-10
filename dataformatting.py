@@ -18,5 +18,32 @@ def format_gamelogs(gamelogs):
     all_data["labels"] = [i for i in range(0, gamelogs.info().shape[0])]
     return all_data
 
-def format_shootingbar(shooting_splits):
-    pass
+def format_shootingchart(shooting_splits):
+    data = {}
+    tooltip = filter_dataframe(shooting_splits.shot_5ft(), ["FGM", "FGA"])
+    total_fgm = sum(tooltip["FGM"])
+    total_fga = sum(tooltip["FGA"])
+    tooltip["FGM"].append(total_fgm)
+    tooltip["FGA"].append(total_fga)
+    percentage = []
+    frequency = []
+    for (fgm, fga) in zip(tooltip["FGM"], tooltip["FGA"]):
+        try:
+            percentage.append(fgm/fga)
+        except ZeroDivisionError:
+            #case where there were no attempts
+            percentage.append(0)
+        try:
+            frequency.append(fga/total_fga)
+        except ZeroDivisionError:
+            frequency.append(0)
+
+
+    #construct data object to be sent
+    data["tooltip"] = tooltip
+    data["tot_FGM"] = total_fgm
+    data["tot_FGA"] = total_fga
+    data["percentage"] = percentage
+    data["frequency"] = frequency
+
+    return data 

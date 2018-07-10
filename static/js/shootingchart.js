@@ -106,29 +106,6 @@
         shooting_stats.total_makes = newData.FGM.reduce(addarray);
     }
 
-    function calcShotFrequency(shooting_stats) {
-        var arrayLen = shooting_stats.FGA.length;
-        var attempts = shooting_stats.FGA;
-        var total_attempts = shooting_stats.total_attempts;
-        var sol = [];
-        for (let i = 0; i < arrayLen; ++i) {
-            sol.push(attempts[i]/total_attempts);
-        }
-        return sol;
-    }
-
-    function calcShotPercentage(shooting_stats) {
-        var makes = shooting_stats.FGM;
-        var attempts = shooting_stats.FGA;
-        if (makes.len != attempts.len) { return undefined; }
-        var arrayLen = makes.length;
-        var sol = [];
-        for (let i = 0; i < arrayLen; ++i) {
-            sol.push(makes[i]/attempts[i]);
-        }
-        return sol;
-    }
-
     //event handler for stats dropdown
     statsselection.on("change", function(){
         curstatsselection = $(this).find("option:selected");

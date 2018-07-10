@@ -5,6 +5,7 @@
     <title>NBA Stats Visualization</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="static/js/chartdefaults.js"></script>
     <script>
         var urls = {
             "shooting_splits" : "{{ url_for('main.shooting_splits') }}",
@@ -35,6 +36,5 @@
 <canvas id="line_chart" width="800" height="400"></canvas>
 <canvas id="shooting_chart" width="800" height="400"></canvas>
 <script src="static/js/playerchart.js"></script>
-<script src="static/js/shootingchart.js"></script>
 </body>
 </html>
