@@ -91,8 +91,6 @@ var chartjsdefaults = (function() {
         set_playerstats: set_playerstats,
         get_shooting: get_shooting,
         get_playerstats: get_playerstats,
-        shooting_stats: shooting_stats,
-        player_stats: player_stats,
         linechartData: linechartData,
         linechartOptions: linechartOptions,
         barchartData: barchartData,
