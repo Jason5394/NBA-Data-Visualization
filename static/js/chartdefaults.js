@@ -1,4 +1,8 @@
 var chartjsdefaults = (function() {
+
+    var shooting_stats = {};
+    var player_stats = {};
+
     var linechartData = {
         datasets : [{
             fill: true,
@@ -51,15 +55,17 @@ var chartjsdefaults = (function() {
                 label: function(tooltipItem) {
                     return tooltipItem["yLabel"].toFixed(2);
                 },
-                afterLabel: function(tooltipItem, data) {
+                afterLabel: function(tooltipItem) {
                     curindex = tooltipItem["index"];
+                    tot_FGA = shooting_stats["tot_FGA"];
                     //for frequency
                     if (tooltipItem["datasetIndex"] == 0) {
-                        return data;
+                        return shooting_stats["tooltip"]["FGA"][curindex] + '-' + tot_FGA + ' FGA';
                     }
                     //for percentage
                     else if (tooltipItem["datasetIndex"] == 1) {
-                        return data;
+                        return shooting_stats["tooltip"]["FGM"][curindex] + '-' + shooting_stats["tooltip"]["FGA"][curindex] + ' FGM-FGA';
+
                     }
                     else return "";
                 }
@@ -73,7 +79,20 @@ var chartjsdefaults = (function() {
         }]
     };
 
+    //setters
+    function set_shooting(stats) { shooting_stats = stats; }
+    function set_playerstats(stats) { player_stats = stats; }
+    //getters
+    function get_shooting() { return shooting_stats; }
+    function get_playerstats() { return player_stats; }
+
     return {
+        set_shooting: set_shooting,
+        set_playerstats: set_playerstats,
+        get_shooting: get_shooting,
+        get_playerstats: get_playerstats,
+        shooting_stats: shooting_stats,
+        player_stats: player_stats,
         linechartData: linechartData,
         linechartOptions: linechartOptions,
         barchartData: barchartData,

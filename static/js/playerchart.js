@@ -1,10 +1,6 @@
 Chart.defaults.global.responsive = false;
 
-(function($, urls, chartDefaults){
-
-//data to be plotted to charts
-var player_stats = {};
-var shooting_stats = {};
+(function($, urls, cd){
 
 //stats dropdown jQuery object
 var statsselection = $("#statsselection");
@@ -20,19 +16,19 @@ var ctx_shooting = $("#shooting_chart")[0].getContext("2d");
 // create the charts using the chart canvas
 var line_chart = new Chart(ctx_stats, {
   type: 'line',
-  data: chartDefaults.linechartData,
-  options: chartDefaults.linechartOptions
+  data: cd.linechartData,
+  options: cd.linechartOptions
 });
 
 var shooting_chart = new Chart(ctx_shooting, {
   type: 'bar',
-  data: chartDefaults.barchartData,
-  options: chartDefaults.barchartOptions
+  data: cd.barchartData,
+  options: cd.barchartOptions
 });
 
 function updateBarChart(chart) {
-  frequency = shooting_stats.frequency;
-  percentage = shooting_stats.percentage;
+  frequency = cd.get_shooting().frequency;
+  percentage = cd.get_shooting().percentage;
   chart.data.datasets[0].data = frequency;
   chart.data.datasets[1].data = percentage;
   chart.update();
@@ -41,8 +37,8 @@ function updateBarChart(chart) {
 function updateLineChart(chart, curselected) {
   var statstype = curselected.val();
   var label = curselected.text();
-  chart.data.labels = player_stats.labels;
-  chart.data.datasets[0].data = player_stats[statstype];
+  chart.data.labels = cd.get_playerstats().labels;
+  chart.data.datasets[0].data = cd.get_playerstats()[statstype];
   chart.data.datasets[0].label = label;
   chart.update();
 }
@@ -53,7 +49,8 @@ function getPlayerStats(ctx) {
   var player = ctx.find("input").val();
   var jqxhr = $.get(urls.player_stats, {"player": player}, function(res) {
       console.log(res);
-      player_stats = res; //set player_stats object
+      cd.set_playerstats(res); //set player_stats object
+      //cd.player_stats = res;
       updateLineChart(line_chart, curstatsselection);
   }, "json")
   .fail(function(data) {
@@ -66,7 +63,8 @@ function getShootingSplits(ctx) {
   var player = ctx.find("input").val();
   var jqxhr = $.get(urls.shooting_splits, {"player": player}, function(res) {
     console.log(res);
-    shooting_stats = res;
+    cd.set_shooting(res);
+    //cd.shooting_stats = res;
     updateBarChart(shooting_chart);
   }, "json")
   .fail(function(data) {
