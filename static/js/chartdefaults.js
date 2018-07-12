@@ -3,7 +3,7 @@ var chartjsdefaults = (function() {
     var shooting_stats = {};
     var player_stats = {};
 
-    var linchartData = {
+    var linechartData = {
         labels: [],
             datasets : [
             {
