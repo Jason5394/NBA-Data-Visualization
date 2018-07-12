@@ -37,9 +37,12 @@ function updateBarChart(chart) {
 function updateLineChart(chart, curselected) {
   var statstype = curselected.val();
   var label = curselected.text();
-  chart.data.labels = cd.get_playerstats().labels;
-  chart.data.datasets[0].data = cd.get_playerstats()[statstype];
+  var stats = cd.get_playerstats();
   chart.data.datasets[0].label = label;
+  if (stats === "undefined") {
+    chart.data.labels = cd.get_playerstats().labels;
+    chart.data.datasets[0].data = cd.get_playerstats()[statstype];
+  }
   chart.update();
 }
 
@@ -85,5 +88,10 @@ playersearch.on("submit", function (e) {
   getShootingSplits($(this));
   e.preventDefault();
 });
+
+//Initialize default values for charts
+//line_chart.data.datasets[0].label = curstatsselection;
+//line_chart.update();
+updateLineChart(line_chart, curstatsselection);
 
 })(window.jQuery, window.urls, window.chartjsdefaults);
