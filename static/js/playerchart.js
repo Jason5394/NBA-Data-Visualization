@@ -2,6 +2,7 @@ Chart.defaults.global.responsive = false;
 
 (function($, urls, cd){
 
+window.onload = function() {
 //stats dropdown jQuery object
 var statsselection = $("#statsselection");
 var curstatsselection = statsselection.find("option:selected");
@@ -39,9 +40,9 @@ function updateLineChart(chart, curselected) {
   var label = curselected.text();
   var stats = cd.get_playerstats();
   chart.data.datasets[0].label = label;
-  if (stats === "undefined") {
-    chart.data.labels = cd.get_playerstats().labels;
-    chart.data.datasets[0].data = cd.get_playerstats()[statstype];
+  if (stats !== "undefined") {
+    chart.data.labels = stats.labels;
+    chart.data.datasets[0].data = stats[statstype];
   }
   chart.update();
 }
@@ -90,8 +91,7 @@ playersearch.on("submit", function (e) {
 });
 
 //Initialize default values for charts
-//line_chart.data.datasets[0].label = curstatsselection;
-//line_chart.update();
 updateLineChart(line_chart, curstatsselection);
 
+}
 })(window.jQuery, window.urls, window.chartjsdefaults);
