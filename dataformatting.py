@@ -1,3 +1,5 @@
+from nba_py.player import PlayerNotFoundException, PlayerGameLogs, get_player, PlayerShootingSplits, PlayerList
+
 def filter_dataframe(dataframe, headers):
     """returns a dict of lists based on the headers of the pandas dataframe"""
     data = {}
@@ -6,7 +8,7 @@ def filter_dataframe(dataframe, headers):
     return data
 
 def format_gamelogs(gamelogs):
-    """Expects a pandas DataFrame, i.e. gamelogs, and returns a dict of key-value pairs of 
+    """Expects a PlayerGameLogs object and returns a dict of key-value pairs of 
     statstype : List[entries]"""
     all_data = {}
     #the list of different stats we will choose to pull
@@ -18,7 +20,7 @@ def format_gamelogs(gamelogs):
     all_data["labels"] = [i for i in range(0, gamelogs.info().shape[0])]
     return all_data
 
-def format_shootingchart(shooting_splits):
+def format_shootingsplits(shooting_splits):
     data = {}
     tooltip = filter_dataframe(shooting_splits.shot_5ft(), ["FGM", "FGA"])
     total_fgm = sum(tooltip["FGM"])
@@ -38,7 +40,6 @@ def format_shootingchart(shooting_splits):
         except ZeroDivisionError:
             frequency.append(0)
 
-
     #construct data object to be sent
     data["tooltip"] = tooltip
     data["tot_FGM"] = total_fgm
@@ -47,3 +48,18 @@ def format_shootingchart(shooting_splits):
     data["frequency"] = frequency
 
     return data 
+
+def format_playerlist(player_list):
+    headers = ["PERSON_ID", "DISPLAY_LAST_COMMA_FIRST", "FROM_YEAR", "TO_YEAR"]
+    return filter_dataframe(player_list.info(), headers) 
+
+formatters = {
+    "playerlist": [PlayerList, format_playerlist],
+    "gamelogs": [PlayerGameLogs, format_gamelogs],
+    "shootingsplits": [PlayerShootingSplits, format_shootingsplits],
+}
+
+def get_data(formatter, *args, **kwargs):
+    if formatter in formatters:
+        data_obj = formatters[formatter][0](*args, **kwargs)
+        return formatters[formatter][1](data_obj)

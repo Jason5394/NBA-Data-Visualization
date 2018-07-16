@@ -1,9 +1,9 @@
 import functools
-from nba_py.player import PlayerNotFoundException, PlayerGameLogs, get_player, PlayerShootingSplits, PlayerList
+from nba_py.player import PlayerNotFoundException, get_player
 import requests
 from fake_useragent import UserAgent
 from pandas import DataFrame
-from .dataformatting import format_gamelogs, filter_dataframe, format_shootingchart
+from .dataformatting import get_data
 
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for, jsonify
@@ -29,9 +29,7 @@ def bad_request(error=None):
 
 @bp.route('/')
 def index():
-    players = PlayerList(only_current=0) #get ALL players from the NBA
-    headers = ["PERSON_ID", "DISPLAY_LAST_COMMA_FIRST", "FROM_YEAR", "TO_YEAR"]
-    player_list = filter_dataframe(players.info(), headers) 
+    player_list = get_data("playerlist", only_current=0)
     return render_template('index.html', player_list=player_list)
 
 @bp.route('/player-stats')
@@ -44,8 +42,7 @@ def player_stats():
         player_id = get_player(name_tokens[0], last_name=name_tokens[1], just_id=True)
     except (PlayerNotFoundException, IndexError):
         return bad_request('Player not found!')
-    gamelogs = PlayerGameLogs(player_id, season='ALL', season_type='Regular Season')
-    all_data = format_gamelogs(gamelogs)
+    all_data = get_data("gamelogs", player_id, season="ALL", season_type="Regular Season")
     return jsonify(all_data)
 
 @bp.route('/shooting-splits')
@@ -58,6 +55,5 @@ def shooting_splits():
         player_id = get_player(name_tokens[0], last_name=name_tokens[1], just_id=True)
     except (PlayerNotFoundException, IndexError):
         return bad_request("player not found!")
-    shooting_splits = PlayerShootingSplits(player_id, season="2017-18")
-    res = format_shootingchart(shooting_splits)
+    res = get_data("shootingsplits", player_id, season="2017-18")
     return jsonify(res)
