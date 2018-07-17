@@ -1,10 +1,21 @@
-from nba_py.player import PlayerNotFoundException, PlayerGameLogs, get_player, PlayerShootingSplits, PlayerList
+import re
+from pandas import DataFrame
+
+from nba_py.player import PlayerNotFoundException, PlayerGameLogs, get_player, PlayerShootingSplits, PlayerList, PlayerSummary
 
 def filter_dataframe(dataframe, headers):
-    """returns a dict of lists based on the headers of the pandas dataframe"""
+    """returns a dict of lists based on the headers of the pandas dataframe. If there is only one row aside from the header, then 
+       it will only return key-value pairs, not lists. """
+    if dataframe.shape[0] < 1:
+        return
+
     data = {}
-    for header in headers:
-        data[header] = dataframe[header].tolist()
+    if dataframe.shape[0] == 1:
+        for header in headers:
+            data[header] = dataframe[header].tolist()[0]
+    else:
+        for header in headers:
+            data[header] = dataframe[header].tolist()
     return data
 
 def format_gamelogs(gamelogs):
@@ -53,10 +64,24 @@ def format_playerlist(player_list):
     headers = ["PERSON_ID", "DISPLAY_LAST_COMMA_FIRST", "FROM_YEAR", "TO_YEAR"]
     return filter_dataframe(player_list.info(), headers) 
 
+def format_playersummary(player_summary):
+    summary = player_summary.info()
+    headers = ["DISPLAY_FIRST_LAST", "BIRTHDATE", "HEIGHT", "WEIGHT", "SEASON_EXP", "JERSEY", "POSITION", "TEAM_NAME", "FROM_YEAR", "TO_YEAR"]
+    data = filter_dataframe(summary, headers)
+    birthdate_re = re.compile(r'\d{4}-\d{2}-\d{2}')
+    mo = birthdate_re.search(data["BIRTHDATE"])
+    match = mo.group(0)
+    if match is not None:
+        data["BIRTHDATE"] = match
+    else:
+        data["BIRTHDATE"] = ""
+    return data
+
 formatters = {
     "playerlist": [PlayerList, format_playerlist],
     "gamelogs": [PlayerGameLogs, format_gamelogs],
     "shootingsplits": [PlayerShootingSplits, format_shootingsplits],
+    "playersummary": [PlayerSummary, format_playersummary],
 }
 
 def get_data(formatter, *args, **kwargs):
