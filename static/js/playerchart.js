@@ -6,6 +6,7 @@ window.onload = function() {
 
 var shooting_stats;
 var player_stats;
+var player_profile;
 
 //stats dropdown jQuery object
 var statsselection = $("#statsselection");
@@ -13,6 +14,9 @@ var curstatsselection = statsselection.find("option:selected");
 
 //search button object
 var playersearch = $("form.searchbtn");
+
+var playerprofile = $("#playerprofile > .profileentry");
+this.console.log(playerprofile);
 
 // get chart canvas
 var ctx_stats = $("#line_chart")[0].getContext("2d");
@@ -130,7 +134,12 @@ function updateLineChart(chart, curselected) {
   chart.update();
 }
 
-//function to request player stats
+function updatePlayerProfile() {
+
+}
+
+//functions to request from API after player is searched for
+
 function getPlayerStats(ctx) {
   console.log("get request: " + urls.player_stats);
   var player = ctx.find("input").val();
@@ -159,6 +168,19 @@ function getShootingSplits(ctx) {
   })
 }
 
+function getPlayerProfile(ctx) {
+  console.log("get request: " + urls.player_stats);
+  var player = ctx.find("input").val();
+  var jqxhr = $.get(urls.player_stats, {"player": player}, function(res) {
+      console.log(res);
+      player_profile = res; //set player_stats object
+      updatePlayerProfile();
+  }, "json")
+  .fail(function(data) {
+      console.log(data.message);
+  })
+}
+
 //event handler for stats dropdown
 statsselection.on("change", function(){
     curstatsselection = $(this).find("option:selected");
@@ -169,12 +191,11 @@ statsselection.on("change", function(){
 playersearch.on("submit", function (e) {
   getPlayerStats($(this));
   getShootingSplits($(this));
+  getPlayerProfile($(this));
   e.preventDefault();
 });
 
 //Initialize default values for charts
-//line_chart.data.datasets[0].label = curstatsselection;
-//line_chart.update();
 updateLineChart(line_chart, curstatsselection);
 
 }

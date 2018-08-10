@@ -1,4 +1,6 @@
 import re
+import numbers
+import numpy as np
 from pandas import DataFrame
 
 from nba_py.player import PlayerNotFoundException, PlayerGameLogs, get_player, PlayerShootingSplits, PlayerList, PlayerSummary
@@ -6,10 +8,17 @@ from nba_py.player import PlayerNotFoundException, PlayerGameLogs, get_player, P
 def filter_dataframe(dataframe, headers):
     """returns a dict of lists based on the headers of the pandas dataframe. If there is only one row aside from the header, then 
        it will only return key-value pairs, not lists. """
-    if dataframe.shape[0] < 1:
-        return
 
     data = {}
+
+    if dataframe.shape[0] < 1:
+        for header in headers:
+            data[header] = []
+        return data
+
+    #clean data (some stats value may be NaN or null, so we want to set them as default 0)
+    dataframe.fillna(0, inplace=True)
+
     if dataframe.shape[0] == 1:
         for header in headers:
             data[header] = dataframe[header].tolist()[0]

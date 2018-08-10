@@ -9,6 +9,7 @@
         var urls = {
             "shooting_splits" : "{{ url_for('main.shooting_splits') }}",
             "player_stats" : "{{ url_for('main.player_stats') }}",
+            "player_summary" : "{{ url_for('main.player_summary') }}",
         };
     </script>
 </head>
@@ -32,6 +33,24 @@
     <option value="BLK">Blocks</option>
 </select>
 
+<div id="playerprofile">
+    <h3>Player Profile</h3>
+    <p class="profileentry"><strong>Name: </strong>
+        default full name
+    </p>
+    <p class="profileentry"><strong>Birth&nbsp;date: </strong>
+        default birth date
+    </p>
+    <p class="profileentry"><strong>Years&nbsp;played: </strong>
+        default years played
+    </p>
+    <p class="profileentry"><strong>Position: </strong>
+        default position
+    </p>
+    <p class="profileentry"><strong>Team: </strong>
+        default team name
+    </p>
+</div>
 <canvas id="line_chart" width="800" height="400"></canvas>
 <canvas id="shooting_chart" width="800" height="400"></canvas>
 <script src="static/js/playerchart.js"></script>

@@ -14,7 +14,7 @@ bp = Blueprint('main', __name__)
 #dict of different possible error messages
 ERRORS = {
     "PlayerNotFound": "Player not found!",
-    "NoPlayerParam": "Player query param must be given"
+    "NoPlayerParam": "Player query param must be given",
 }
 
 @bp.errorhandler(404)
@@ -42,12 +42,12 @@ def index():
 def player_stats():
     player_name = request.args.get('player')
     if not player_name:
-        return bad_request(ERRORS.NoPlayerParam)
+        return bad_request(ERRORS["NoPlayerParam"])
     name_tokens = player_name.split()
     try:
         player_id = get_player(name_tokens[0], last_name=name_tokens[1], just_id=True)
     except (PlayerNotFoundException, IndexError):
-        return bad_request(ERRORS.PlayerNotFound)
+        return bad_request(ERRORS["PlayerNotFound"])
     all_data = get_data("gamelogs", player_id, season="ALL", season_type="Regular Season")
     return jsonify(all_data)
 
@@ -55,12 +55,12 @@ def player_stats():
 def shooting_splits():
     player_name = request.args.get('player')
     if not player_name:
-        return bad_request(ERRORS.NoPlayerParam)        
+        return bad_request(ERRORS["NoPlayerParam"])        
     name_tokens = player_name.split()
     try:
         player_id = get_player(name_tokens[0], last_name=name_tokens[1], just_id=True)
     except (PlayerNotFoundException, IndexError):
-        return bad_request(ERRORS.PlayerNotFound)
+        return bad_request(ERRORS["PlayerNotFound"])
     res = get_data("shootingsplits", player_id, season="2017-18")
     return jsonify(res)
 
@@ -68,11 +68,15 @@ def shooting_splits():
 def player_summary():
     player_name = request.args.get('player')
     if not player_name:
-        return bad_request(ERRORS.NoPlayerParam)
+        return bad_request(ERRORS["NoPlayerParam"])
     name_tokens = player_name.split()
     try:
         player_id = get_player(name_tokens[0], last_name=name_tokens[1], just_id=True)
     except (PlayerNotFoundException, IndexError):
-        return bad_request(ERRORS.PlayerNotFound)
+        return bad_request(ERRORS["PlayerNotFound"])
     player_summary = get_data("playersummary", player_id)
     return jsonify(player_summary)
+
+@bp.route('/player-box')
+def player_box():
+    pass
